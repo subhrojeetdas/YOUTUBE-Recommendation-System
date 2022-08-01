@@ -34,7 +34,7 @@ def save_to_csv(output_dict, filename):
 
 def comments_helper(video_ID, api_key_file, service):
     # put comments extracted in specific lists for each column
-    comments, commentsId, likesCount, authors = [], [], [], []
+    comments, commentsId, likesCount, authors,reply_count = [], [], [], [],[]
     # response to get the title of the video
     response_title = service.videos().list(
         part = 'snippet',
@@ -57,11 +57,13 @@ def comments_helper(video_ID, api_key_file, service):
             text = comment["snippet"]["textDisplay"]
             comment_id = item['snippet']['topLevelComment']['id']
             like_count = item['snippet']['topLevelComment']['snippet']['likeCount']
+            reply_c = item['snippet']['totalReplyCount']
             # append the comment to the lists
             comments.append(text)
             commentsId.append(comment_id)
             likesCount.append(like_count)
             authors.append(author)
+            reply_count.append(reply_c)
         # get next page of comments
         if 'nextPageToken' in response:
             response = service.commentThreads().list(part="snippet",
@@ -77,4 +79,4 @@ def comments_helper(video_ID, api_key_file, service):
     print("Author: ",authors)
     print("Comment ID: ",commentsId)
     print("Like Count: ",likesCount)'''
-    return dict({'Comment' : comments, 'Author' : authors, 'Comment ID' : commentsId, 'Like Count' : likesCount}), video_title
+    return dict({'Comment' : comments, 'Author' : authors, 'Comment ID' : commentsId, 'Like Count' : likesCount,'Reply Count':reply_count}), video_title
